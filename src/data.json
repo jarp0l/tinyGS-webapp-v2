@@ -1,12 +1,21 @@
 {
   "navLinks": [
     { "text": "Home", "icon": "mdi-home", "path": "/" },
-    { "text": "Stations", "icon": "$station", "path": "/stations" },
-    { "text": "Satellites", "icon": "$satellite", "path": "/satellites" },
+    { "text": "Stations", "icon": "mdi-satellite-uplink", "path": "/stations" },
+    {
+      "text": "Satellites",
+      "icon": "mdi-satellite-variant",
+      "path": "/satellites"
+    },
     {
       "text": "Packets",
       "icon": "mdi-file-document-outline",
       "path": "/packets"
+    },
+    {
+      "text": "Dashboard",
+      "icon": "mdi-view-dashboard",
+      "path": "/dashboard"
     }
   ],
   "socialLinks": [
@@ -29,6 +38,11 @@
       "icon": "mdi-forum",
       "name": " Telegram",
       "url": "https://t.me/joinchat/DmYSElZahiJGwHX6jCzB3Q"
+    },
+    {
+      "icon": "mdi-twitter",
+      "name": "Twitter",
+      "url": "https://twitter.com/tiny__GS"
     }
   ]
 }
