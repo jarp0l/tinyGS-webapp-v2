@@ -1,10 +1,8 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
-// import Satellites from '@/views/Satellites.vue'
 // import Satellite from '@/views/Satellite.vue'
 // import Packet from '@/views/Packet.vue'
-// import Packets from '@/views/Packets.vue'
 // import Station from '@/views/Station.vue'
 // import User from '@/views/User.vue'
 
@@ -17,22 +15,22 @@ const routes = [
       title: "Home - TinyGS",
     },
   },
-  // {
-  //   path: "/stations",
-  //   name: "Stations",
-  //   component: () => import("@/views/Stations.vue"),
-  //   meta: {
-  //     title: "Stations - TinyGS",
-  //   },
-  // },
-  // {
-  //   path: "/satellites",
-  //   name: "Satellites",
-  //   component: () => import("@/views/Satellites.vue"),
-  //   meta: {
-  //     title: "Satellites - TinyGS",
-  //   },
-  // },
+  {
+    path: "/stations",
+    name: "Stations",
+    component: () => import("@/views/Stations.vue"),
+    meta: {
+      title: "Stations - TinyGS",
+    },
+  },
+  {
+    path: "/satellites",
+    name: "Satellites",
+    component: () => import("@/views/Satellites.vue"),
+    meta: {
+      title: "Satellites - TinyGS",
+    },
+  },
   // {
   //   path: "/satellite/:name",
   //   name: "Satellite",
@@ -50,14 +48,14 @@ const routes = [
   //     title: "Packet View - TinyGS",
   //   },
   // },
-  // {
-  //   path: "/packets",
-  //   name: "Packets",
-  //   component: () => import("@/views/Packets.vue"),
-  //   meta: {
-  //     title: "Last received packets - TinyGS",
-  //   },
-  // },
+  {
+    path: "/packets",
+    name: "Packets",
+    component: () => import("@/views/Packets.vue"),
+    meta: {
+      title: "Last received packets - TinyGS",
+    },
+  },
   // {
   //   path: "/station/:id",
   //   name: "Station",
@@ -74,6 +72,14 @@ const routes = [
   //     title: "User Console - TinyGS",
   //   },
   // },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: () => import("@/views/Dashboard.vue"),
+    meta: {
+      title: "Dashboard - TinyGS",
+    },
+  },
 ];
 
 const router = createRouter({
