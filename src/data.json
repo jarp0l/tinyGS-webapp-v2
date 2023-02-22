@@ -1,0 +1,43 @@
+{
+  "navLinks": [
+    { "text": "Home", "icon": "mdi-home", "path": "/" },
+    { "text": "Stations", "icon": "mdi-satellite-uplink", "path": "/stations" },
+    {
+      "text": "Satellites",
+      "icon": "mdi-satellite-variant",
+      "path": "/satellites"
+    },
+    {
+      "text": "Packets",
+      "icon": "mdi-file-document-outline",
+      "path": "/packets"
+    },
+    {
+      "text": "Dashboard",
+      "icon": "mdi-view-dashboard",
+      "path": "/dashboard"
+    }
+  ],
+  "socialLinks": [
+    {
+      "icon": "mdi-github",
+      "name": " GitHub",
+      "url": "https://github.com/G4lile0/tinyGS"
+    },
+    {
+      "icon": "mdi-file-document-multiple-outline",
+      "name": " Wiki",
+      "url": "https://github.com/G4lile0/tinyGS/wiki"
+    },
+    {
+      "icon": "mdi-map-marker-question-outline",
+      "name": " FAQ",
+      "url": "https://github.com/G4lile0/tinyGS/wiki/FAQ"
+    },
+    {
+      "icon": "mdi-twitter",
+      "name": "Twitter",
+      "url": "https://twitter.com/tiny__GS"
+    }
+  ]
+}
