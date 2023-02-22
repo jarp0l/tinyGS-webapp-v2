@@ -1,5 +1,5 @@
 <template>
-  <v-footer class="mt-12 pa-3 bg-blue-darken-2" padless absolute>
+  <v-footer class="mt-12 pa-3 bg-blue-darken-2" padless absolute app bottom>
     <v-row justify="center" no-gutters>
       <v-btn
         v-for="link in socialLinks"

@@ -80,6 +80,22 @@ const routes = [
       title: "Dashboard - TinyGS",
     },
   },
+  {
+    path: "/signin",
+    name: "Sign in",
+    component: () => import("@/views/SigninForm.vue"),
+    meta: {
+      title: "Sign in - TinyGS",
+    },
+  },
+  {
+    path: "/signup",
+    name: "Sign up",
+    component: () => import("@/views/SignupForm.vue"),
+    meta: {
+      title: "Sign up - TinyGS",
+    },
+  },
 ];
 
 const router = createRouter({
