@@ -27,9 +27,13 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block color="white" variant="plain">
-            Logout
+          <v-btn block color="white" variant="plain" v-if="signedIn">
+            Sign out
             <v-icon end icon="mdi-logout"></v-icon>
+          </v-btn>
+          <v-btn block color="white" variant="flat" v-else>
+            Create account
+            <v-icon end icon="mdi-account-plus"></v-icon>
           </v-btn>
         </div>
       </template>
@@ -42,7 +46,7 @@
         title="Toggle sidebar"
       ></v-app-bar-nav-icon>
 
-      <div class="flex-grow-1 d-flex justify-center">
+      <v-app-bar-title>
         <v-img
           contain
           transition="fade-transition"
@@ -50,11 +54,21 @@
           alt="TinyGS logo"
           src="@/assets/logo.svg"
         />
-      </div>
+      </v-app-bar-title>
 
-      <v-btn icon class="mr-2" v-if="user">
-        <v-icon large icon="mdi-account-circle"></v-icon>
-      </v-btn>
+      <template v-slot:append>
+        <div v-if="signedIn">
+          <v-btn icon>
+            <v-icon size="large">mdi-account-circle</v-icon>
+            <v-tooltip activator="parent" location="bottom">Go to dashboard</v-tooltip>
+          </v-btn>
+          <v-btn icon>
+            <v-icon>mdi-logout</v-icon>
+            <v-tooltip activator="parent" location="bottom">Sign out</v-tooltip>
+          </v-btn>
+        </div>
+        <v-btn variant="outlined" color="white" v-else>Sign in</v-btn>
+      </template>
     </v-app-bar>
   </div>
 </template>
@@ -64,6 +78,6 @@ import { ref } from "vue";
 import links from "@/data.json";
 
 const drawer = ref(true);
-const user = ref(true);
+const signedIn = ref(false);
 const navLinks = ref(links.navLinks);
 </script>
