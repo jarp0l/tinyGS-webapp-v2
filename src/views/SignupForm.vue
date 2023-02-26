@@ -4,7 +4,7 @@
       <div class="text-center">
         <h2 class="text-grey-darken-3">Create a new account</h2>
       </div>
-      <v-form ref="form" @submit.prevent="handleSubmit">
+      <v-form ref="signupForm" @submit.prevent="handleSubmit">
         <v-card-text>
           <v-text-field
             clearable
@@ -62,7 +62,7 @@
   </AuthLayout>
 
   <v-snackbar location="top" color="success" v-model="showSnackbar">
-    Sign in successful!
+    Check your email for confirmation!
     <template v-slot:actions>
       <v-btn variant="text" @click="showSnackbar = false" append-icon="mdi-close">
       </v-btn>
@@ -79,7 +79,7 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 const loading = ref(false);
 const timeout = ref(2000);
-const form = ref(null);
+const signupForm = ref(null);
 
 const user = ref({
   email: "",
@@ -113,7 +113,7 @@ const isFormEmpty = () =>
   user.value.confirmPassword === "";
 
 const handleSubmit = () => {
-  form.value.validate().then((res) => {
+  signupForm.value.validate().then((res) => {
     if (res.valid) {
       if (!isFormEmpty()) {
         console.log(user.value);

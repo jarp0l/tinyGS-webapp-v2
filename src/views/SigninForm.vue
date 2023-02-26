@@ -4,7 +4,7 @@
       <div class="text-center">
         <h2 class="text-grey-darken-3">Sign in to TinyGS</h2>
       </div>
-      <v-form @submit.prevent="handleSubmit">
+      <v-form ref="signinForm" @submit.prevent="handleSubmit">
         <v-card-text>
           <v-text-field
             clearable
@@ -64,6 +64,7 @@ const showSnackbar = ref(false);
 const showPassword = ref(false);
 const loading = ref(false);
 const timeout = ref(2000);
+const signinForm = ref(null);
 
 const user = ref({
   email: "",
@@ -86,15 +87,19 @@ const rules = ref({
 const isFormEmpty = () => user.value.email === "" || user.value.password === "";
 
 const handleSubmit = () => {
-  if (!isFormEmpty()) {
-    console.log(user.value);
+  signinForm.value.validate().then((res) => {
+    if (res.valid) {
+      if (!isFormEmpty()) {
+        console.log(user.value);
 
-    loading.value = true;
-    setTimeout(() => {
-      loading.value = false;
-      showSnackbar.value = true;
-    }, timeout.value);
-  }
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          showSnackbar.value = true;
+        }, timeout.value);
+      }
+    }
+  });
 
   // alert(JSON.stringify(user.value, null, 2));
 };
