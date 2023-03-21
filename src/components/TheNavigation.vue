@@ -45,6 +45,7 @@
       ></v-app-bar-nav-icon>
 
       <v-app-bar-title>
+        <!-- <router-link to="/"> -->
         <v-img
           contain
           transition="fade-transition"
@@ -52,15 +53,16 @@
           alt="TinyGS logo"
           src="@/assets/logo.svg"
         />
+        <!-- </router-link> -->
       </v-app-bar-title>
 
       <template v-slot:append>
-        <div v-if="signedIn">
-          <v-btn icon>
+        <div v-if="isLoggedIn">
+          <v-btn icon @click="goToDashboard">
             <v-icon size="large">mdi-account-circle</v-icon>
             <v-tooltip activator="parent" location="bottom">Go to dashboard</v-tooltip>
           </v-btn>
-          <v-btn icon>
+          <v-btn icon @click="logout">
             <v-icon>mdi-logout</v-icon>
             <v-tooltip activator="parent" location="bottom">Sign out</v-tooltip>
           </v-btn>
@@ -76,10 +78,41 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import links from "@/data.json";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/store/auth.store";
+import { useUserStore } from "@/store/user.store";
 
 const drawer = ref(true);
-const signedIn = ref(false);
 const navLinks = ref(links.navLinks);
+const isLoggedIn = ref(false);
+
+const router = useRouter();
+const authStore = useAuthStore();
+const userStore = useUserStore();
+
+const goToDashboard = () => {
+  router.push("/dashboard");
+};
+
+const logout = async () => {
+  await authStore.logout();
+};
+
+onMounted(() => {
+  isLoggedIn.value = userStore.isAuthenticated();
+});
+
+// isLoggedIn.value = userStore.isAuthenticated();
+
+// watch(
+//   isLoggedIn,
+//   () => userStore.isAuthenticated(),
+//   (loginStatus) => {
+//     isLoggedIn.value = loginStatus;
+//   }
+// );
+
+isLoggedIn.value = userStore.isLoggedIn.value;
 </script>

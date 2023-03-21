@@ -112,8 +112,8 @@ async function getStatistics() {
     const { data } = await axios.get("https://api.tinygs.com/v1/statistics");
     console.log(data);
     statistics.value = data;
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 }
 </script>

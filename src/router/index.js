@@ -5,6 +5,8 @@ import Home from "@/views/Home.vue";
 // import Packet from '@/views/Packet.vue'
 // import Station from '@/views/Station.vue'
 // import User from '@/views/User.vue'
+// import { useAuthStore } from "@/store/auth.store";
+import { useUserStore } from "@/store/user.store";
 
 const routes = [
   {
@@ -73,14 +75,6 @@ const routes = [
   //   },
   // },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: () => import("@/views/Dashboard.vue"),
-    meta: {
-      title: "Dashboard - TinyGS",
-    },
-  },
-  {
     path: "/signin",
     name: "Sign in",
     component: () => import("@/views/SigninForm.vue"),
@@ -96,6 +90,23 @@ const routes = [
       title: "Sign up - TinyGS",
     },
   },
+  {
+    path: "/auth/verify",
+    name: "Verify token",
+    component: () => import("@/views/TokenVerification.vue"),
+    meta: {
+      title: "Verify token - TinyGS",
+    },
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: () => import("@/views/Dashboard.vue"),
+    meta: {
+      title: "Dashboard - TinyGS",
+      requiresAuth: true,
+    },
+  },
 ];
 
 const router = createRouter({
@@ -103,9 +114,18 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _, next) => {
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
   document.title = to.meta.title;
-  next();
+
+  const isAuthenticated = userStore.isAuthenticated();
+  // console.error(isAuthenticated);
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ path: "/signin" });
+  } else {
+    next();
+  }
 });
 
 export default router;

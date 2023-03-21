@@ -35,7 +35,7 @@
         <v-card-actions class="justify-center">
           <v-btn
             block
-            :loading="loading"
+            :loading="authStore.signinLoading"
             type="submit"
             class="bg-blue-darken-2"
             variant="flat"
@@ -59,11 +59,10 @@
 <script setup>
 import { ref } from "vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
+import { useAuthStore } from "@/store/auth.store";
 
 const showSnackbar = ref(false);
 const showPassword = ref(false);
-const loading = ref(false);
-const timeout = ref(2000);
 const signinForm = ref(null);
 
 const user = ref({
@@ -74,7 +73,10 @@ const user = ref({
 const rules = ref({
   email: [
     (v) => !!v || "Email is required",
-    (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Invalid email",
+    (v) =>
+      /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        v
+      ) || "Invalid email",
   ],
   password: [
     (v) => !!v || "Password is required",
@@ -84,23 +86,17 @@ const rules = ref({
   ],
 });
 
+const authStore = useAuthStore();
+
 const isFormEmpty = () => user.value.email === "" || user.value.password === "";
 
 const handleSubmit = () => {
-  signinForm.value.validate().then((res) => {
+  signinForm.value.validate().then(async (res) => {
     if (res.valid) {
       if (!isFormEmpty()) {
-        console.log(user.value);
-
-        loading.value = true;
-        setTimeout(() => {
-          loading.value = false;
-          showSnackbar.value = true;
-        }, timeout.value);
+        await authStore.login(user.value.email, user.value.password);
       }
     }
   });
-
-  // alert(JSON.stringify(user.value, null, 2));
 };
 </script>

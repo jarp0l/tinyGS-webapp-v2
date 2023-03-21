@@ -30,38 +30,28 @@
             @click:append="showPassword = !showPassword"
             variant="underlined"
             required
-            class="mb-4"
-          />
-          <v-text-field
-            clearable
-            v-model="user.confirmPassword"
-            :rules="rules.confirmPassword"
-            :type="showConfirmPassword ? 'text' : 'password'"
-            label="Confirm Password"
-            placeholder="Retype password"
-            prepend-inner-icon="mdi-key"
-            :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="showConfirmPassword = !showConfirmPassword"
-            variant="underlined"
-            required
           />
         </v-card-text>
         <v-card-actions class="justify-center">
           <v-btn
             block
-            :loading="loading"
+            :loading="authStore.signupLoading"
             type="submit"
             class="bg-blue-darken-2"
             variant="flat"
+            :disabled="tokenStore.emailSendSuccessful"
           >
             <span class="px-8">Sign up</span>
           </v-btn>
         </v-card-actions>
+        <v-card-text class="text-center" v-if="tokenStore.emailSendSuccessful">
+          Please check your email.</v-card-text
+        >
       </v-form>
     </v-card>
   </AuthLayout>
 
-  <v-snackbar location="top" color="success" v-model="showSnackbar">
+  <v-snackbar location="top" color="success" height="800" v-model="showSnackbar">
     Check your email for confirmation!
     <template v-slot:actions>
       <v-btn variant="text" @click="showSnackbar = false" append-icon="mdi-close">
@@ -72,19 +62,17 @@
 
 <script setup>
 import { ref } from "vue";
+import { useAuthStore } from "@/store/auth.store";
+import { useTokenStore } from "@/store/token.store";
 import AuthLayout from "@/layouts/AuthLayout.vue";
 
 const showSnackbar = ref(false);
 const showPassword = ref(false);
-const showConfirmPassword = ref(false);
-const loading = ref(false);
-const timeout = ref(2000);
 const signupForm = ref(null);
 
 const user = ref({
   email: "",
   password: "",
-  confirmPassword: "",
 });
 
 const rules = ref({
@@ -101,32 +89,24 @@ const rules = ref({
       (v && v.length >= 6 && v.length <= 72) ||
       "Password must be between 8 and 72 characters!",
   ],
-  confirmPassword: [
-    (v) => !!v || "Password is required",
-    (v) => (v && v === user.value.password) || "Password does not match!",
-  ],
 });
 
-const isFormEmpty = () =>
-  user.value.email === "" ||
-  user.value.password === "" ||
-  user.value.confirmPassword === "";
+const authStore = useAuthStore();
+const tokenStore = useTokenStore();
+
+const isFormEmpty = () => user.value.email === "" || user.value.password === "";
 
 const handleSubmit = () => {
-  signupForm.value.validate().then((res) => {
+  signupForm.value.validate().then(async (res) => {
     if (res.valid) {
       if (!isFormEmpty()) {
-        console.log(user.value);
-
-        loading.value = true;
-        setTimeout(() => {
-          loading.value = false;
+        await authStore.register(user.value.email, user.value.password);
+        if (tokenStore.emailSendSuccessful) {
           showSnackbar.value = true;
-        }, timeout.value);
+          signupForm.value.reset();
+        }
       }
     }
   });
-
-  // alert(JSON.stringify(user.value, null, 2));
 };
 </script>

@@ -11,11 +11,6 @@
       "text": "Packets",
       "icon": "mdi-file-document-outline",
       "path": "/packets"
-    },
-    {
-      "text": "Dashboard",
-      "icon": "mdi-view-dashboard",
-      "path": "/dashboard"
     }
   ],
   "socialLinks": [
