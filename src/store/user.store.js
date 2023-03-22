@@ -7,7 +7,7 @@ import { useAuthStore } from "./auth.store";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref(JSON.parse(localStorage.getItem("user")));
-  const msg = ref({});
+  // const msg = ref({});
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const router = useRouter();
@@ -31,7 +31,7 @@ export const useUserStore = defineStore("user", () => {
     } catch (err) {
       if (err.response.status === 401) {
         console.log("Missing token or inactive user.");
-        msg.value.error = "Missing token or inactive user.";
+        // msg.value = { error: "Missing token or inactive user." };
         authStore.clearStorage();
       }
       router.push("/signin");
