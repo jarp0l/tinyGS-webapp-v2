@@ -3,31 +3,22 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
-// import { useAuthStore } from "./auth.store";
-import Cookies from "js-cookie";
+import { useAuthStore } from "./auth.store";
 
 export const useUserStore = defineStore("user", () => {
-  const user = ref(null);
-  const isLoggedIn = ref(!!localStorage.getItem("logged_in"));
+  const user = ref(JSON.parse(localStorage.getItem("user")));
+  const msg = ref({});
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const router = useRouter();
-
-  const isAuthenticated = () => {
-    return !!Cookies.get("logged_in");
-  };
-
-  async function fetchUser() {
-    const response = await axios.get(`${apiBaseUrl}/user/me`, {
-      withCredentials: true,
-      timeout: 3000,
-    });
-    return response;
-  }
+  const authStore = useAuthStore();
 
   async function getCurrentUser() {
     try {
-      const response = await fetchUser();
+      const response = await axios.get(`${apiBaseUrl}/user/me`, {
+        withCredentials: true,
+        timeout: 3000,
+      });
 
       if (response.status === 200) {
         console.log("User fetched.");
@@ -40,6 +31,8 @@ export const useUserStore = defineStore("user", () => {
     } catch (err) {
       if (err.response.status === 401) {
         console.log("Missing token or inactive user.");
+        msg.value.error = "Missing token or inactive user.";
+        authStore.clearStorage();
       }
       router.push("/signin");
     }
@@ -47,8 +40,6 @@ export const useUserStore = defineStore("user", () => {
 
   return {
     user,
-    isLoggedIn,
     getCurrentUser,
-    isAuthenticated,
   };
 });

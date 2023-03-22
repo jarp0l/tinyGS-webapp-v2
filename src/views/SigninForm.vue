@@ -35,7 +35,7 @@
         <v-card-actions class="justify-center">
           <v-btn
             block
-            :loading="authStore.signinLoading"
+            :loading="authStore.isLoading"
             type="submit"
             class="bg-blue-darken-2"
             variant="flat"

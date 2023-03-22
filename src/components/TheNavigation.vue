@@ -57,7 +57,7 @@
       </v-app-bar-title>
 
       <template v-slot:append>
-        <div v-if="isLoggedIn">
+        <div v-if="!!userStore.user">
           <v-btn icon @click="goToDashboard">
             <v-icon size="large">mdi-account-circle</v-icon>
             <v-tooltip activator="parent" location="bottom">Go to dashboard</v-tooltip>
@@ -78,15 +78,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import links from "@/data.json";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import links from "@/data.json";
 import { useAuthStore } from "@/store/auth.store";
 import { useUserStore } from "@/store/user.store";
 
 const drawer = ref(true);
 const navLinks = ref(links.navLinks);
-const isLoggedIn = ref(false);
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -99,20 +98,4 @@ const goToDashboard = () => {
 const logout = async () => {
   await authStore.logout();
 };
-
-onMounted(() => {
-  isLoggedIn.value = userStore.isAuthenticated();
-});
-
-// isLoggedIn.value = userStore.isAuthenticated();
-
-// watch(
-//   isLoggedIn,
-//   () => userStore.isAuthenticated(),
-//   (loginStatus) => {
-//     isLoggedIn.value = loginStatus;
-//   }
-// );
-
-isLoggedIn.value = userStore.isLoggedIn.value;
 </script>

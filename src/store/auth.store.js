@@ -3,25 +3,26 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { useTokenStore } from "@/store/token.store";
 import { useUserStore } from "@/store/user.store";
 
 export const useAuthStore = defineStore("auth", () => {
-  // const emit = defineEmits(["loggedOut"]);
-
-  const signinLoading = ref(false);
-  const signupLoading = ref(false);
+  const isLoading = ref(false);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const router = useRouter();
   const tokenStore = useTokenStore();
   const userStore = useUserStore();
 
-  async function register(email, password) {
-    try {
-      signupLoading.value = true;
+  function clearStorage() {
+    userStore.user = null;
+    localStorage.removeItem("user");
+  }
 
+  async function register(email, password) {
+    isLoading.value = true;
+
+    try {
       const response = await axios.post(
         `${apiBaseUrl}/auth/register`,
         {
@@ -36,20 +37,25 @@ export const useAuthStore = defineStore("auth", () => {
       }
     } catch (err) {
       if (err.response.status === 400) {
-        if (err.response.data.detail === "REGISTER_USER_ALREADY_EXISTS")
+        if (err.response.data.detail === "REGISTER_USER_ALREADY_EXISTS") {
           console.log("User already exists");
-        else if (err.response.data.detail?.code === "REGISTER_INVALID_PASSWORD")
+          userStore.msg.value.error = "User already exists.";
+        } else if (
+          err.response.data.detail?.code === "REGISTER_INVALID_PASSWORD"
+        ) {
           console.log(err.response.data.detail.reason);
+          userStore.msg.value.error = err.response.data.detail.reason;
+        }
       } else console.error(err.response);
     } finally {
-      signupLoading.value = false;
+      isLoading.value = false;
     }
   }
 
   async function login(username, password) {
-    try {
-      signinLoading.value = true;
+    isLoading.value = true;
 
+    try {
       const response = await axios.post(
         `${apiBaseUrl}/auth/login`,
         {
@@ -67,20 +73,24 @@ export const useAuthStore = defineStore("auth", () => {
       if (response.status === 200) {
         console.log("Logged in!");
         await userStore.getCurrentUser();
-        Cookies.set("logged_in", "true");
-        router.push({ path: "/dashboard" });
+        router.push("/dashboard");
       }
     } catch (err) {
       if (err.response.status === 400) {
-        if (err.response.data.detail === "LOGIN_USER_NOT_VERIFIED")
+        if (err.response.data.detail === "LOGIN_USER_NOT_VERIFIED") {
           console.log(
             "User not verified yet. Please check email for confirmation link."
           );
-        else if (err.response.data.detail === "LOGIN_BAD_CREDENTIALS")
+          userStore.msg.value.error =
+            "User not verified yet. Please check email for confirmation link.";
+        } else if (err.response.data.detail === "LOGIN_BAD_CREDENTIALS") {
           console.log("Either bad credentials or the user is inactive.");
+          userStore.msg.value.error =
+            "Either bad credentials or the user is inactive.";
+        }
       } else console.error(err.response);
     } finally {
-      signinLoading.value = false;
+      isLoading.value = false;
     }
   }
 
@@ -97,24 +107,21 @@ export const useAuthStore = defineStore("auth", () => {
 
       if (response.status === 200) {
         console.log("User logged out.");
-        userStore.isLoggedIn = false;
-        localStorage.removeItem("user");
-        Cookies.remove("logged_in");
-        userStore.user = null;
-        // emit("loggedOut");
         await router.push("/");
       }
     } catch (err) {
-      console.log(err)
       if (err.response.status === 401) {
         console.log("Missing token or inactive user.");
+        userStore.msg.value.error = "Missing token or inactive user.";
       }
+    } finally {
+      clearStorage();
     }
   }
 
   return {
-    signinLoading,
-    signupLoading,
+    isLoading,
+    clearStorage,
     register,
     login,
     logout,

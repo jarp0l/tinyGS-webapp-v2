@@ -80,6 +80,7 @@ const routes = [
     component: () => import("@/views/SigninForm.vue"),
     meta: {
       title: "Sign in - TinyGS",
+      hasAuth: true,
     },
   },
   {
@@ -88,6 +89,7 @@ const routes = [
     component: () => import("@/views/SignupForm.vue"),
     meta: {
       title: "Sign up - TinyGS",
+      hasAuth: true,
     },
   },
   {
@@ -114,17 +116,20 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to) => {
   const userStore = useUserStore();
   document.title = to.meta.title;
 
-  const isAuthenticated = userStore.isAuthenticated();
-  // console.error(isAuthenticated);
+  const isAuthenticated = !!userStore.user;
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ path: "/signin" });
-  } else {
-    next();
+    return "/signin";
+  }
+
+  // for routes with meta.hasAuth set to true,
+  // and user is authenticated, no need of showing them
+  if (to.meta.hasAuth && isAuthenticated) {
+    return "/";
   }
 });
 

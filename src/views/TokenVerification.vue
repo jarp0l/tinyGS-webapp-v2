@@ -28,43 +28,20 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
-
-// import { useAuthStore } from "@/store/auth.store";
+import { storeToRefs } from "pinia";
 import AuthLayout from "@/layouts/AuthLayout.vue";
-
-// const authStore = useAuthStore();
-// authStore.login();
+import { useTokenStore } from "@/store/token.store";
 
 const hasTokenQueryParam = ref(false);
-const isVerificationSuccess = ref(false);
 
 const route = useRoute();
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const tokenStore = useTokenStore();
+const { isVerificationSuccess } = storeToRefs(tokenStore);
 
 const token = route.query.token;
 if (token) {
-  axios
-    .post(`${apiBaseUrl}/auth/verify`, {
-      token: token,
-    })
-    .then((response) => {
-      const body = response.data;
-      if (body.is_verified) {
-        console.log(`Successfully verified user: ${body.email}`);
-        isVerificationSuccess.value = true;
-      }
-    })
-    .catch((err) => {
-      if (err.response.status === 400) {
-        const msg = err.response.data.detail;
-        if (msg === "VERIFY_USER_BAD_TOKEN") console.log("Bad token!");
-        else if (msg === "VERIFY_USER_ALREADY_VERIFIED")
-          console.log("User already verified!");
-        isVerificationSuccess.value = false;
-      }
-    });
   hasTokenQueryParam.value = true;
+  async () => await tokenStore.verifyToken(token);
 } else {
   hasTokenQueryParam.value = false;
 }
