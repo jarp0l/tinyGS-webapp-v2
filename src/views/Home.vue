@@ -1,7 +1,8 @@
 <template>
-  <v-container fluid class="ma-0 pa-4">
-    <!-- <Worldmap style="height: 60vh; width: 100%" /> -->
-    <v-container class="text-grey-darken-3">
+  <WorldMap />
+
+  <BodyLayout>
+    <div class="text-grey-darken-3">
       <div class="text-h5 text-center font-weight-bold mb-4">
         Welcome to TinyGS, the Open Source Global Satellite Network
       </div>
@@ -15,9 +16,9 @@
         and sx127x LoRa módules but we plan to support more radio módules in the future.
       </p>
       <div
-        class="d-flex align-center justify-space-around flex-wrap flex-md-row flex-sm-column"
+        class="d-flex align-center justify-space-around flex-wrap flex-md-row flex-sm-column py-8"
       >
-        <v-card class="pa-2 ma-2 mb-sm-8 rounded-xl stats-card text-grey-darken-1">
+        <v-card class="pa-4 ma-2 mb-sm-8 rounded-xl stats-card text-grey-darken-1">
           <v-card-text>
             <div class="text-center text-h5">
               <v-icon size="x-large" class="pb-3">mdi-account-group</v-icon>
@@ -93,18 +94,20 @@
         our <a href="https://github.com/G4lile0/tinyGS">GitHub Page</a> and build your
         station.
       </p>
-    </v-container>
-  </v-container>
+    </div>
+  </BodyLayout>
 </template>
 
 <script setup>
 import { onBeforeMount, ref } from "vue";
 import axios from "axios";
+import BodyLayout from "@/layouts/BodyLayout.vue";
+import WorldMap from "@/components/WorldMap.vue";
 
 const statistics = ref({});
 
-onBeforeMount(() => {
-  getStatistics();
+onBeforeMount(async () => {
+  await getStatistics();
 });
 
 async function getStatistics() {

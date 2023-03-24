@@ -2,17 +2,25 @@
   <v-app>
     <TheNavigation />
     <v-main class="bg-grey-lighten-3">
-      <v-container fluid class="ma-0 pa-4">
+      <!-- On the home page the map view needs to cover the full width -->
+      <div v-if="route.path === '/'">
         <router-view />
-      </v-container>
+      </div>
+      <BodyLayout v-else>
+        <router-view />
+      </BodyLayout>
       <TheFooter />
     </v-main>
   </v-app>
 </template>
 
 <script setup>
+import { useRoute } from "vue-router";
 import TheNavigation from "@/components/TheNavigation.vue";
-import TheFooter from "./components/TheFooter.vue";
+import TheFooter from "@/components/TheFooter.vue";
+import BodyLayout from "@/layouts/BodyLayout.vue";
+
+const route = useRoute();
 </script>
 
 <style>
