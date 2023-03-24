@@ -5,6 +5,8 @@ import Home from "@/views/Home.vue";
 // import Packet from '@/views/Packet.vue'
 // import Station from '@/views/Station.vue'
 // import User from '@/views/User.vue'
+// import { useAuthStore } from "@/store/auth.store";
+import { useUserStore } from "@/store/user.store";
 
 const routes = [
   {
@@ -73,11 +75,38 @@ const routes = [
   //   },
   // },
   {
+    path: "/signin",
+    name: "Sign in",
+    component: () => import("@/views/SigninForm.vue"),
+    meta: {
+      title: "Sign in - TinyGS",
+      hasAuth: true,
+    },
+  },
+  {
+    path: "/signup",
+    name: "Sign up",
+    component: () => import("@/views/SignupForm.vue"),
+    meta: {
+      title: "Sign up - TinyGS",
+      hasAuth: true,
+    },
+  },
+  {
+    path: "/auth/verify",
+    name: "Verify token",
+    component: () => import("@/views/TokenVerification.vue"),
+    meta: {
+      title: "Verify token - TinyGS",
+    },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("@/views/Dashboard.vue"),
     meta: {
       title: "Dashboard - TinyGS",
+      requiresAuth: true,
     },
   },
 ];
@@ -87,9 +116,21 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _, next) => {
+router.beforeEach(async (to) => {
+  const userStore = useUserStore();
   document.title = to.meta.title;
-  next();
+
+  const isAuthenticated = !!userStore.user;
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return "/signin";
+  }
+
+  // for routes with meta.hasAuth set to true,
+  // and user is authenticated, no need of showing them
+  if (to.meta.hasAuth && isAuthenticated) {
+    return "/";
+  }
 });
 
 export default router;

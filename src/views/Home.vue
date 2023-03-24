@@ -69,7 +69,7 @@
         and we are excited to support their new launched satellites into our network.
       </p>
       <p>This are the more important moments of the project:</p>
-      <ul>
+      <ul class="list">
         <li>Nov 28, 2019 ESP32-OLED-Fossa-GroundStation project born.</li>
         <li>Dec 6, 2019 FossaSAT-1 deployed with an Electron rocket by Rocket Lab.</li>
         <li>Dec 10,2019 YL3CT's GS receive the fist LoRa packet from FossaSAT-1</li>
@@ -112,27 +112,24 @@ async function getStatistics() {
     const { data } = await axios.get("https://api.tinygs.com/v1/statistics");
     console.log(data);
     statistics.value = data;
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 }
 </script>
 
 <style scoped>
-h2 {
-  text-align: center;
-}
 .stats-card {
   min-width: 250px;
   min-height: 175px;
 }
-p {
+/* p {
   margin-bottom: 16px;
-}
-ul {
+} */
+.list {
   padding-left: 20px;
 }
-ul > li {
+.list > li {
   margin-bottom: 2px;
 }
 </style>

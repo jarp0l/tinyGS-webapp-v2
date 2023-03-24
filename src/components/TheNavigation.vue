@@ -12,27 +12,29 @@
       </div>
       <v-divider color="white"></v-divider>
       <v-list color="transparent" :lines="false" density="compact" nav>
-        <v-list-item-group>
-          <v-list-item
-            v-for="link in navLinks"
-            :key="link.text"
-            :prepend-icon="link.icon"
-            :title="link.text"
-            active-color="white"
-            :to="link.path"
-          >
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item
+          v-for="link in navLinks"
+          :key="link.text"
+          :prepend-icon="link.icon"
+          :title="link.text"
+          active-color="white"
+          :to="link.path"
+        >
+        </v-list-item>
       </v-list>
 
-      <template v-slot:append>
+      <!-- <template v-slot:append>
         <div class="pa-2">
-          <v-btn block color="white" variant="plain">
-            Logout
+          <v-btn block color="white" variant="plain" v-if="signedIn">
+            Sign out
             <v-icon end icon="mdi-logout"></v-icon>
           </v-btn>
+          <v-btn block color="white" class="text-primary" variant="flat" v-else>
+            Create account
+            <v-icon end icon="mdi-account-plus"></v-icon>
+          </v-btn>
         </div>
-      </template>
+      </template> -->
     </v-navigation-drawer>
 
     <v-app-bar class="bg-blue-darken-2" height="70">
@@ -42,7 +44,8 @@
         title="Toggle sidebar"
       ></v-app-bar-nav-icon>
 
-      <div class="flex-grow-1 d-flex justify-center">
+      <v-app-bar-title>
+        <!-- <router-link to="/"> -->
         <v-img
           contain
           transition="fade-transition"
@@ -50,20 +53,49 @@
           alt="TinyGS logo"
           src="@/assets/logo.svg"
         />
-      </div>
+        <!-- </router-link> -->
+      </v-app-bar-title>
 
-      <v-btn icon class="mr-2" v-if="user">
-        <v-icon large icon="mdi-account-circle"></v-icon>
-      </v-btn>
+      <template v-slot:append>
+        <div v-if="!!userStore.user">
+          <v-btn icon @click="goToDashboard">
+            <v-icon size="large">mdi-account-circle</v-icon>
+            <v-tooltip activator="parent" location="bottom">Go to dashboard</v-tooltip>
+          </v-btn>
+          <v-btn icon @click="logout">
+            <v-icon>mdi-logout</v-icon>
+            <v-tooltip activator="parent" location="bottom">Sign out</v-tooltip>
+          </v-btn>
+        </div>
+        <!-- <v-btn variant="outlined" color="white" v-else>Sign in</v-btn> -->
+        <div v-else>
+          <v-btn variant="text" color="white" class="mr-1" to="/signin">Sign in</v-btn>
+          <v-btn variant="outlined" color="white" to="/signup">Sign up</v-btn>
+        </div>
+      </template>
     </v-app-bar>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import links from "@/data.json";
+import { useAuthStore } from "@/store/auth.store";
+import { useUserStore } from "@/store/user.store";
 
 const drawer = ref(true);
-const user = ref(true);
 const navLinks = ref(links.navLinks);
+
+const router = useRouter();
+const authStore = useAuthStore();
+const userStore = useUserStore();
+
+const goToDashboard = () => {
+  router.push("/dashboard");
+};
+
+const logout = async () => {
+  await authStore.logout();
+};
 </script>
